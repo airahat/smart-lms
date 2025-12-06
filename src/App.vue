@@ -3,7 +3,11 @@ import Nav from './layout/Nav.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './assets/style.css';
+import './assets/main.js';
 import Sidebar from './layout/Sidebar.vue';
+
+
+
 
 
 </script>
@@ -15,7 +19,7 @@ import Sidebar from './layout/Sidebar.vue';
     </header>
     <div class="d-flex min-vh-100">
         <Sidebar />
-        <main class="container mt-4">
+        <main class="container-fluid mt-4">
           
             <router-view>
 

@@ -1,7 +1,12 @@
 <template>
-  <div class="d-flex flex-column sidebar pt-5  p-1 text-white bg-dark ">
+  <div id="sidebar" class="d-flex flex-column sidebar   p-1 text-white bg-dark ">
+      <div class="toggle-div ms-auto" id="toggle-div">
+        <i class="fa-solid fa-chevron-right text-dark fs-4"></i>
 
-    <ul class="nav nav-pills flex-column mb-auto text-start">
+      </div>
+     
+
+    <ul class="nav nav-pills flex-column mb-auto pe-4 text-start">
 
       <li>
         <router-link to="/" class="nav-link text-white  d-flex align-items-center">

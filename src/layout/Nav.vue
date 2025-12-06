@@ -24,11 +24,14 @@
           <ul class="dropdown-menu me-2" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="#">Schedule a Test</a></li>
             
-     
+            
             
           </ul>
         </li>
-
+        
+        <li class="nav-item me-2">
+          <router-link class="nav-link" to="/ai-advisor">AI Adviser</router-link>
+        </li>
       </ul>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
