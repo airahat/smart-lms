@@ -1,10 +1,33 @@
+<script setup lang="ts">
+import { api } from '@/config/api';
+
+const logout = async () => {
+  try {
+    await api.post("/logout");
+    localStorage.removeItem("token"); 
+    localStorage.removeItem("user");
+   
+    window.location.href = "/login";
+  } catch (error) {
+    console.error(error);
+    alert("Logout failed!");
+  }
+};
+</script>
+
+
 <template>
   <div id="sidebar" class="d-flex flex-column sidebar p-1 text-white bg-dark">
     <div class="toggle-div ms-auto" id="toggle-div">
       <i class="fa-solid fa-chevron-right text-dark fs-4"></i>
     </div>
 
-    <ul class="nav nav-pills flex-column mb-auto pe-4 text-start">
+    <div class="sidebar-profile text-center mb-4"> 
+      <img src="@/assets/default.png" alt="" class="rounded-circle">
+      <div class="role">Admin</div>
+    </div>
+    <ul class="nav nav-pills flex-column mb-auto pe-4 text-start mt-5">
+
 
       <li>
         <router-link to="/" class="nav-link text-white d-flex align-items-center">
@@ -31,8 +54,8 @@
       </li>
 
       <li>
-        <router-link to="/teachers" class="nav-link text-white d-flex align-items-center">
-          Teachers <i class="fa-solid fa-chalkboard-user ms-auto"></i>
+        <router-link to="/trainers" class="nav-link text-white d-flex align-items-center">
+          Trainers <i class="fa-solid fa-chalkboard-user ms-auto"></i>
         </router-link>
       </li>
 
@@ -63,8 +86,8 @@
       </li>
 
       <li>
-        <router-link to="/analytics" class="nav-link text-white d-flex align-items-center">
-          Analytics <i class="fa-solid fa-chart-simple ms-auto"></i>
+        <router-link to="/users" class="nav-link text-white d-flex align-items-center">
+          Users <i class="fa-solid fa-chart-simple ms-auto"></i>
         </router-link>
       </li>
 
@@ -77,7 +100,7 @@
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
          id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="" width="32" height="32"
+        <img src="" alt="" width="32" height="32"
              class="rounded-circle me-2">
         <strong>mdo</strong>
       </a>
@@ -88,7 +111,7 @@
         <li>
           <hr class="dropdown-divider">
         </li>
-        <li><a class="dropdown-item" href="#">Sign out</a></li>
+        <button @click="logout" class="dropdown-item">Sign out</button>
       </ul>
     </div>
   </div>
