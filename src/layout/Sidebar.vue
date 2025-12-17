@@ -1,5 +1,15 @@
 <script setup lang="ts">
+  import { onMounted } from 'vue';
 import { api } from '@/config/api';
+import { useUserStore } from '@/store/user';
+const userStore = useUserStore();
+
+onMounted(() => {
+  if (!userStore.user) {
+    const localUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (localUser) userStore.setUser(localUser);
+  }
+});
 
 const logout = async () => {
   try {
@@ -22,10 +32,16 @@ const logout = async () => {
       <i class="fa-solid fa-chevron-right text-dark fs-4"></i>
     </div>
 
-    <div class="sidebar-profile text-center mb-4"> 
-      <img src="@/assets/default.png" alt="" class="rounded-circle">
-      <div class="role">Admin</div>
-    </div>
+<div class="sidebar-profile text-center mb-4"> 
+  <img src="@/assets/default.png" alt="" class="rounded-circle">
+  <div class="role">
+    <!-- {{ userStore.user?.role_id || 'Guest' }} -->
+    <span v-if="userStore.user?.role_id === 1">Admin</span>
+    <span v-else-if="userStore.user?.role_id === 2">Editor</span>
+    <span v-else-if="userStore.user?.role_id === 3">Student</span>
+    <span v-else-if="userStore.user?.role_id === 4">Trainer</span>
+  </div>
+</div>
     <ul class="nav nav-pills flex-column mb-auto pe-4 text-start mt-5">
 
 
@@ -47,13 +63,13 @@ const logout = async () => {
         </router-link>
       </li>
 
-      <li>
+      <li v-if="userStore.isAdmin">
         <router-link to="/students" class="nav-link text-white d-flex align-items-center">
           Students <i class="fa-solid fa-user-graduate ms-auto"></i>
         </router-link>
       </li>
 
-      <li>
+      <li v-if="userStore.isAdmin">
         <router-link to="/trainers" class="nav-link text-white d-flex align-items-center">
           Trainers <i class="fa-solid fa-chalkboard-user ms-auto"></i>
         </router-link>
@@ -79,13 +95,8 @@ const logout = async () => {
         </router-link>
       </li>
 
-      <li>
-        <router-link to="/files" class="nav-link text-white d-flex align-items-center">
-          Files <i class="fa-solid fa-folder-open ms-auto"></i>
-        </router-link>
-      </li>
 
-      <li>
+      <li v-if="userStore.isAdmin">
         <router-link to="/users" class="nav-link text-white d-flex align-items-center">
           Users <i class="fa-solid fa-chart-simple ms-auto"></i>
         </router-link>
@@ -100,9 +111,9 @@ const logout = async () => {
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
          id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="" alt="" width="32" height="32"
+        <img src="@/assets/default.png" alt="" width="32" height="32"
              class="rounded-circle me-2">
-        <strong>mdo</strong>
+        <strong>{{ userStore.user?.name || 'Guest' }}</strong>
       </a>
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
         <li><a class="dropdown-item" href="#">New project...</a></li>

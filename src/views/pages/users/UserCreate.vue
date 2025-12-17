@@ -93,6 +93,11 @@ const createUser = async () => {
 
 <style scoped>
 .container {
-  max-width: 600px;
+    max-width: 800px;
+    border: 1px solid #abdefc;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: #3b3e41 10px 15px 10px;
+    
 }
 </style>

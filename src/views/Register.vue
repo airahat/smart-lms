@@ -45,7 +45,7 @@ const register = async () => {
 <template>
   <div class="registration-form">
     <img src="@/assets/lms.png" alt="logo" class="img-fluid lms-logo mb-4" />
-    <h1 class="text-center">Register</h1>
+    <h1 class="text-center text-light fw-bolder">Register</h1>
 
     <form @submit.prevent="register">
       <div class="form-group mb-3"> 
@@ -74,6 +74,12 @@ const register = async () => {
       </div>
       <button type="submit" class="btn btn-outline-info login-btn">Register</button>
     </form>
+        <div>
+      <p class="text-center mt-3 text-white">
+        Already have an account?
+        <router-link to="/login" class="text-info fw-bold">Login</router-link>
+      </p>
+    </div>
   </div>
 </template>
 

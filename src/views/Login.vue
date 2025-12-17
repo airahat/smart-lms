@@ -50,6 +50,12 @@ const login = async () => {
       </div>
       <button type="submit" class="btn btn-outline-info login-btn">Login</button>
     </form>
+    <div>
+      <p class="text-center mt-3 text-white">
+        Don't have an account?
+        <router-link to="/register" class="text-info fw-bold">Register</router-link>
+      </p>
+    </div>
   </div>
 </template>
 
