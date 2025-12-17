@@ -49,7 +49,7 @@ function deleteCourse(id: number) {
                         <th>Course Code</th>
                         <th>Course Name</th>
                         <th>Instructor</th>
-                        <th>Duration</th>
+                        <th>Duration (Hrs.)</th>
                         <th>Action</th>
                     </tr>
                 </thead>

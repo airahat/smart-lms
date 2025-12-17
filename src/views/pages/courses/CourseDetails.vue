@@ -26,7 +26,7 @@
             <td>{{ course.description }}</td>
           </tr>
           <tr>
-            <th>Duration</th>
+            <th>Duration (Hrs.)</th>
             <td>{{ course.duration }}</td>
           </tr>
           <tr>
