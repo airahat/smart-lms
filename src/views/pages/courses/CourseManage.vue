@@ -1,9 +1,19 @@
 <script setup lang="ts">
 import { api } from '@/config/api';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import type { Course } from '@/interfaces/courses';
 import { useRouter } from 'vue-router';
 import { defaultCourse } from '@/interfaces/courses';
+import { useUserStore } from '@/store/user';
+const userStore = useUserStore();
+
+onMounted(() => {
+  if (!userStore.user) {
+    const localUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (localUser) userStore.setUser(localUser);
+  }
+});
+
 const courses = ref<Course[]>([defaultCourse]);
 
 function fetchCourses() {
@@ -61,12 +71,14 @@ function deleteCourse(id: number) {
                         <td>{{ course.trainer_name }}</td>
                         <td>{{ course.duration }}</td>
                         <td>
-                            <router-link :to="`/courses/${course.id}/details`" class="btn btn-sm"><i
+                            <router-link :to="`/courses/${course.id}/details`" class="btn btn-sm" v-if="userStore.isAdmin"><i
                                     class="fa-solid fa-eye fs-5 "></i></router-link>
-                            <router-link :to="`/courses/${course.id}/edit`" class="btn btn-sm"><i
-                                    class="fa-solid fs-5 fa-pen-to-square text-info"></i></router-link>
-                            <button @click="deleteCourse(course.id)" class="btn btn-sm"><i
-                                    class="fa-regular fa-trash-can fs-5 text-danger"></i></button>
+                                    <router-link :to="`/courses/${course.id}/edit`" class="btn btn-sm" v-if="userStore.isAdmin"><i
+                                        class="fa-solid fs-5 fa-pen-to-square text-info"></i></router-link>
+                                        <button @click="deleteCourse(course.id)" class="btn btn-sm" v-if="userStore.isAdmin"><i
+                                            class="fa-regular fa-trash-can fs-5 text-danger"></i></button>
+                                            <router-link :to="`/courses/${course.id}/details`" class="btn btn-sm" v-else><i
+                                                    class="fa-solid fa-eye fs-5 "></i></router-link>
                         </td>
                     </tr>
 

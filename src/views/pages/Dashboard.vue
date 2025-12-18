@@ -12,7 +12,7 @@ const stats = [
 <template>
   <div class="container-fluid">
     <!-- Admin Dashboard  -->
-    <div  class="mb-4" v-if="userStore.isAdmin">
+    <div class="mb-4" v-if="userStore.isAdmin">
       <h3 class="fw-bold text-light">Dashboard</h3>
       <p class=" text-light">Welcome back! Here's an overview.</p>
     </div>
@@ -49,6 +49,19 @@ const stats = [
           </div>
         </div>
 
+      </div>
+    </div>
+
+
+    <!-- Trainer Dashboard -->
+
+    <div v-else-if="userStore.isTrainer">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <h5 class="card-title ">Welcome to Your Trainer Dashboard</h5>
+          <p class="card-text">Here you can manage your courses and track student progress.</p>
+          <router-link to="/my-courses" class="btn btn-primary">Manage My Courses</router-link>
+        </div>
       </div>
     </div>
     <!-- Student Dashboard   -->

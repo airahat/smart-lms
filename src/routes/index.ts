@@ -19,7 +19,6 @@ const routes = [
   { path: '/login', component: Login, meta: { hideLayout: true } },
   { path: '/register', component: Register, meta: { hideLayout: true } },
   { path: '/', component: Dashboard },
-  // { path: '/user', component: User },
   { path: '/students', component: Students, meta: { requiresAdmin: true, admin: true }  },
   { path: '/trainers', component: Trainers, meta: { requiresAdmin: true, admin: true }  },
   { path: '/trainers/create', component: TrainersCreate, meta: { requiresAdmin: true, admin: true }  },

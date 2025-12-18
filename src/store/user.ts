@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user', {
   }),
   getters: {
     isAdmin: (state) => state.user?.role_id === 1,
+    isTrainer: (state) => state.user?.role_id === 4,
   },
   actions: {
     setUser(userData: any) {
