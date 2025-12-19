@@ -6,126 +6,207 @@
       <!-- Course Code -->
       <div class="mb-4">
         <label for="course_code" class="fw-bold text-white">Course Code:</label>
-        <input type="text" id="course_code" class="form-control" v-model="course.course_code" required />
+        <input
+          type="text"
+          id="course_code"
+          class="form-control"
+          v-model="course.course_code"
+        />
       </div>
 
       <!-- Course Title -->
       <div class="mb-4">
         <label for="title" class="fw-bold text-white">Course Title:</label>
-        <input type="text" id="title" class="form-control" v-model="course.title" required />
+        <input
+          type="text"
+          id="title"
+          class="form-control"
+          v-model="course.title"
+          required
+        />
       </div>
 
-      <!-- Description with Quill -->
+      <!-- Description -->
       <div class="mb-4">
         <label class="fw-bold text-white mb-2">Description:</label>
-        <QuillEditor
-          v-model="course.description"
-          :modules="editorOptions.modules"
-          theme="snow"
-          class="description-editor"
-        />
+
+        <div class="editor-toolbar mb-2">
+          <button type="button" @click="editor.chain().focus().toggleBold().run()">B</button>
+          <button type="button" @click="editor.chain().focus().toggleItalic().run()">I</button>
+          <button type="button" @click="editor.chain().focus().toggleStrike().run()">S</button>
+          <button type="button" @click="editor.chain().focus().toggleBulletList().run()">• List</button>
+          <button type="button" @click="editor.chain().focus().toggleOrderedList().run()">1. List</button>
+          <button type="button" @click="editor.chain().focus().setParagraph().run()">P</button>
+        </div>
+
+        <EditorContent class="description-editor" :editor="editor" />
       </div>
 
       <!-- Trainer -->
       <div class="mb-4">
         <label for="trainer" class="fw-bold text-white">Instructor:</label>
-        <select id="trainer" class="form-select" v-model="course.trainer_id" required>
-          <option value="" disabled>Select Instructor</option>
-          <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
+        <select
+          id="trainer"
+          class="form-select"
+          v-model.number="course.trainer_id"
+          @change="updateTrainerName"
+          required
+        >
+          <option :value="0" disabled>Select Instructor</option>
+          <option
+            v-for="user in users"
+            :key="user.id"
+            :value="user.id"
+          >
+            {{ user.name }}
+          </option>
         </select>
       </div>
 
       <!-- Duration -->
       <div class="mb-4">
         <label for="duration" class="fw-bold text-white">Duration (hrs):</label>
-        <input type="text" id="duration" class="form-control" v-model="course.duration" required />
+        <input
+          type="number"
+          id="duration"
+          class="form-control"
+          v-model.number="course.duration"
+          min="0"
+          required
+        />
       </div>
 
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-info w-100 fw-bold">Create Course</button>
+      <!-- Course Status -->
+      <div class="mb-4">
+        <label for="course_status" class="fw-bold text-white">Course Status:</label>
+        <select
+          id="course_status"
+          class="form-select"
+          v-model.number="course.course_status_id"
+          required
+        >
+          <option :value="0" disabled>Select Status</option>
+          <option
+            v-for="status in courseStatuses"
+            :key="status.id"
+            :value="status.id"
+          >
+            {{ status.name }}
+          </option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-info w-100 fw-bold">
+        Create Course
+      </button>
     </form>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import type { Course } from '@/interfaces/courses';
-import type { Users } from '@/interfaces/users';
-import { api } from '@/config/api';
-import { QuillEditor } from '@vueup/vue-quill';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { Editor, EditorContent } from '@tiptap/vue-3'
+import StarterKit from '@tiptap/starter-kit'
+import { api } from '@/config/api'
+import type { Course } from '@/interfaces/courses'
+import type { Users } from '@/interfaces/users'
+import { defaultCourse } from '@/interfaces/courses'
+import { useRouter } from 'vue-router'
 
-// Initialize course
+const router = useRouter();
+interface CourseStatus {
+  id: number
+  name: string
+}
+
+
 const course = ref<Course>({
-  course_code: '',
-  title: '',
-  description: '',
-  trainer_id: '',
-  duration: ''
-});
+  ...defaultCourse,
+  course_status_id: 0
+})
 
-// Trainers list
-const users = ref<Users[]>([]);
 
-// Fetch trainers on mount
-onMounted(async () => {
-  try {
-    const res = await api.get('trainers');
-    users.value = res.data.trainers;
-  } catch (err) {
-    console.error('Error fetching trainers:', err);
+const users = ref<Users[]>([])
+const courseStatuses = ref<CourseStatus[]>([])
+
+// TipTap
+const editor = new Editor({
+  extensions: [StarterKit],
+  content: course.value.description || '',
+  onUpdate({ editor }) {
+    course.value.description = editor.getHTML()
   }
-});
+})
 
-// Quill editor options
-const editorOptions = {
-  modules: {
-    toolbar: [
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ header: 1 }, { header: 2 }],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image']
-    ]
-  }
-};
+onBeforeUnmount(() => {
+  editor.destroy()
+})
 
-// Handle form submission
+// fetch trainers
+const fetchTrainers = async () => {
+  const res = await api.get('trainers')
+  users.value = res.data.trainers
+}
+
+// fetch course status
+const fetchCourseStatuses = async () => {
+  const res = await api.get('/course-statuses')
+  console.log(res.data)
+  courseStatuses.value = res.data.course_statuses
+}
+
+onMounted(() => {
+  fetchTrainers()
+  fetchCourseStatuses()
+})
+
+// set trainer name
+function updateTrainerName() {
+  const trainer = users.value.find(
+    u => u.id === course.value.trainer_id
+  )
+  course.value.trainer_name = trainer ? trainer.name : ''
+}
+
+// submit
 async function handleSubmit() {
   try {
-    await api.post('courses', course.value);
-    alert('Course created successfully!');
-    course.value = {
-      course_code: '',
-      title: '',
-      description: '',
-      trainer_id: '',
-      duration: ''
-    };
+    await api.post('courses', course.value)
+    alert('Course created successfully!')
+    course.value = { ...defaultCourse, course_status_id: 0 }
+    editor.commands.setContent('')
+    router.push('/courses')
   } catch (err) {
-    console.error('Error creating course:', err);
-    alert('Failed to create course.');
+    console.error(err)
+    alert('Failed to create course.')
   }
 }
 </script>
 
 <style scoped>
-/* Quill Editor Styling */
 .description-editor {
-  min-height: 200px;
   background-color: #fff;
   border: 1px solid #ced4da;
   border-radius: 0.5rem;
-}
-.ql-toolbar {
-  border-radius: 0.5rem 0.5rem 0 0;
-  border: 1px solid #ced4da;
-  border-bottom: none;
-}
-.ql-container {
-  border-radius: 0 0 0.5rem 0.5rem;
+  padding: 0.5rem;
 }
 
-/* Form input styling */
+.editor-toolbar {
+  display: flex;
+  gap: 5px;
+}
+
+.editor-toolbar button {
+  padding: 0.3rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.editor-toolbar button:hover {
+  background-color: #eee;
+}
+
 input.form-control,
 select.form-select {
   border-radius: 0.5rem;
@@ -137,6 +218,7 @@ button.btn-info {
   padding: 0.6rem;
   transition: transform 0.2s, box-shadow 0.2s;
 }
+
 button.btn-info:hover {
   transform: translateY(-2px);
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);

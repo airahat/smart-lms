@@ -2,7 +2,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Dashboard from '@/views/pages/Dashboard.vue';
 import User from '@/views/pages/User.vue';
-import Students from '@/views/pages/Students.vue';
+import Students from '@/views/pages/students/StudentManage.vue';
+import StudentsCreate from '@/views/pages/students/StudentCreate.vue';
 import Tests from '@/views/pages/Tests.vue';
 import CourseManage from '@/views/pages/courses/CourseManage.vue';
 import CourseCreate from '@/views/pages/courses/CourseCreate.vue';
@@ -14,21 +15,28 @@ import AiAdvisor from '@/views/pages/AiAdvisor.vue';
 import CourseDetails from '@/views/pages/courses/CourseDetails.vue';
 import Trainers from '@/views/pages/trainers/TrainersManage.vue';
 import TrainersCreate from '@/views/pages/trainers/TrainersCreate.vue';
+import Quill from '@/views/Quill.vue';
+import LessonCreate from '@/views/pages/lessons/LessonCreate.vue';
+import LessonManage from '@/views/pages/lessons/LessonManage.vue';
 
 const routes = [
   { path: '/login', component: Login, meta: { hideLayout: true } },
   { path: '/register', component: Register, meta: { hideLayout: true } },
   { path: '/', component: Dashboard },
   { path: '/students', component: Students, meta: { requiresAdmin: true, admin: true }  },
+  { path: '/students/create', component: StudentsCreate, meta: { requiresAdmin: true, admin: true }  },
   { path: '/trainers', component: Trainers, meta: { requiresAdmin: true, admin: true }  },
   { path: '/trainers/create', component: TrainersCreate, meta: { requiresAdmin: true, admin: true }  },
   { path: '/tests', component: Tests },
   { path: '/courses', component: CourseManage },
   { path: '/courses/create', component: CourseCreate, meta: { requiresAdmin: true, admin: true }  },
   { path: '/courses/:id/details', component: CourseDetails },
+  {path: '/lessons/create', component: LessonCreate, meta: { requiresAdmin: true, admin: true } },
+  {path: '/lessons', component: LessonManage, meta: { requiresAdmin: true, admin: true } },
   { path: '/users', component: UserManage, meta: { requiresAdmin: true, admin: true } },
   { path: '/users/create', component: UserCreate, meta: { requiresAdmin: true, admin: true  } },
-  { path: '/ai-advisor', component: AiAdvisor }
+  { path: '/ai-advisor', component: AiAdvisor },
+  { path: '/quill', component: Quill }
 ];
 
 const router = createRouter({

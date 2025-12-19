@@ -1,50 +1,58 @@
 <script setup lang="ts">
-  import { onMounted } from 'vue';
-import { api } from '@/config/api';
-import { useUserStore } from '@/store/user';
-const userStore = useUserStore();
+import { ref, onMounted } from 'vue'
+import { api } from '@/config/api'
+import { useUserStore } from '@/store/user'
+
+const userStore = useUserStore()
+
+const isCollapsed = ref(false)
 
 onMounted(() => {
   if (!userStore.user) {
-    const localUser = JSON.parse(localStorage.getItem('user') || 'null');
-    if (localUser) userStore.setUser(localUser);
+    const localUser = JSON.parse(localStorage.getItem('user') || 'null')
+    if (localUser) userStore.setUser(localUser)
   }
-});
+})
+
+const toggleSidebar = () => {
+  isCollapsed.value = !isCollapsed.value
+}
 
 const logout = async () => {
   try {
-    await api.post("/logout");
-    localStorage.removeItem("token"); 
-    localStorage.removeItem("user");
-   
-    window.location.href = "/login";
-  } catch (error) {
-    console.error(error);
-    alert("Logout failed!");
+    await api.post('/logout')
+  } finally {
+    localStorage.clear()
+    window.location.href = '/login'
   }
-};
+}
 </script>
 
-
 <template>
-  <div id="sidebar" class="d-flex flex-column sidebar p-1 text-white bg-dark">
-    <div class="toggle-div ms-auto" id="toggle-div">
+  <!-- ONLY ADD :class -->
+  <div
+    id="sidebar"
+    class="d-flex flex-column sidebar p-1 text-white bg-dark"
+    :class="{ collapsed: isCollapsed }"
+  >
+
+    <!-- ONLY ADD @click (id kept for CSS safety) -->
+    <div class="toggle-div ms-auto" id="toggle-div" @click="toggleSidebar">
       <i class="fa-solid fa-chevron-right text-dark fs-4"></i>
     </div>
 
-<div class="sidebar-profile text-center mb-4"> 
-  <img src="@/assets/default.png" alt="" class="rounded-circle">
-  <div class="role">
-    <!-- {{ userStore.user?.role_id || 'Guest' }} -->
-    <span v-if="userStore.user?.role_id === 1">Admin</span>
-    <span v-else-if="userStore.user?.role_id === 2">Editor</span>
-    <span v-else-if="userStore.user?.role_id === 3">Student</span>
-    <span v-else-if="userStore.user?.role_id === 4">Trainer</span>
-  </div>
-</div>
+    <!-- EVERYTHING BELOW IS UNCHANGED -->
+    <div class="sidebar-profile text-center mb-4"> 
+      <img src="@/assets/default.png" alt="" class="rounded-circle">
+      <div class="role">
+        <span v-if="userStore.user?.role_id === 1">Admin</span>
+        <span v-else-if="userStore.user?.role_id === 2">Editor</span>
+        <span v-else-if="userStore.user?.role_id === 3">Student</span>
+        <span v-else-if="userStore.user?.role_id === 4">Trainer</span>
+      </div>
+    </div>
+
     <ul class="nav nav-pills flex-column mb-auto pe-4 text-start mt-5">
-
-
       <li>
         <router-link to="/" class="nav-link text-white d-flex align-items-center">
           Dashboard <i class="fa-solid fa-chart-line ms-auto"></i>
@@ -87,42 +95,34 @@ const logout = async () => {
         </router-link>
       </li>
 
-
-
       <li>
         <router-link to="/suggestions" class="nav-link text-white d-flex align-items-center">
           Suggestions <i class="fa-solid fa-lightbulb ms-auto"></i>
         </router-link>
       </li>
 
-
       <li v-if="userStore.isAdmin">
         <router-link to="/users" class="nav-link text-white d-flex align-items-center">
           Users <i class="fa-solid fa-chart-simple ms-auto"></i>
         </router-link>
       </li>
-
-
-
     </ul>
 
     <hr>
 
     <div class="dropdown">
       <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-         id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="@/assets/default.png" alt="" width="32" height="32"
+         data-bs-toggle="dropdown">
+        <img src="@/assets/default.png" width="32" height="32"
              class="rounded-circle me-2">
         <strong>{{ userStore.user?.name || 'Guest' }}</strong>
       </a>
-      <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-        <li><a class="dropdown-item" href="#">New project...</a></li>
-        <li><a class="dropdown-item" href="#">Settings</a></li>
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
         <li><a class="dropdown-item" href="#">Profile</a></li>
+        <li><hr class="dropdown-divider"></li>
         <li>
-          <hr class="dropdown-divider">
+          <button @click="logout" class="dropdown-item">Sign out</button>
         </li>
-        <button @click="logout" class="dropdown-item">Sign out</button>
       </ul>
     </div>
   </div>

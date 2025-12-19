@@ -1,5 +1,5 @@
 <template>
-  <div class="container my-5">
+  <div class="container-fluid">
     <!-- Loading state -->
     <div v-if="loading" class="text-center py-5">
       <div class="spinner-border text-primary" role="status">
@@ -14,7 +14,9 @@
         <div class="card shadow-sm border-0 rounded-3">
           <div class="card-header bg-white border-bottom">
             <h4 class="mb-0 fw-bold">{{ course.title }}</h4>
-            <small class="text-muted fw-bold">Course code - {{ course.course_code }}</small>
+            <small class="text-muted fw-bold">
+              Course code - {{ course.course_code }}
+            </small>
           </div>
 
           <div class="card-body">
@@ -29,17 +31,14 @@
               <div class="col-8">{{ course.trainer_name }}</div>
             </div>
 
-            <!-- Description -->
+            <!-- Description (TipTap HTML) -->
             <div class="mb-3">
               <div class="text-muted fw-semibold mb-2">Description:</div>
-              
-              <!-- Paragraphs -->
-              <p v-for="(para, idx) in descriptionParagraphs" :key="'p-'+idx">{{ para }}</p>
 
-              <!-- Modules -->
-              <ul v-if="modules.length">
-                <li v-for="(module, idx) in modules" :key="'m-'+idx">{{ module }}</li>
-              </ul>
+              <div
+                class="tiptap-content"
+                v-html="course.description"
+              ></div>
             </div>
           </div>
 
@@ -52,66 +51,52 @@
       </div>
     </div>
 
-    <!-- Error state -->
+    <!-- Error -->
     <div v-else class="alert alert-danger text-center">
       Course not found.
     </div>
   </div>
 </template>
 
+
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { api } from '@/config/api';
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { api } from '@/config/api'
 
 interface Course {
-  id: number;
-  course_code: string;
-  title: string;
-  description: string;
-  duration: string;
-  trainer_id: number;
-  trainer_name: string;
+  id: number
+  course_code: string
+  title: string
+  description: string
+  duration: string
+  trainer_id: number
+  trainer_name: string
 }
 
-const route = useRoute();
-const router = useRouter();
-const course = ref<Course | null>(null);
-const loading = ref(true);
+const route = useRoute()
+const router = useRouter()
 
-// Computed properties to format description
-const descriptionParagraphs = computed(() => {
-  if (!course.value?.description) return [];
-  return course.value.description
-    .split(/\n\n+/) // split by double line breaks
-    .filter(p => !p.match(/^\d+\./) && !p.startsWith("Course Modules:"))
-    .map(p => p.trim());
-});
+const course = ref<Course | null>(null)
+const loading = ref(true)
 
-const modules = computed(() => {
-  if (!course.value?.description) return [];
-  const matches = course.value.description.match(/^\d+\..+/gm);
-  return matches ? matches.map(m => m.trim()) : [];
-});
-
-// Fetch course data
-(async () => {
-  const courseId = route.params.id;
+;(async () => {
+  const courseId = route.params.id
   if (!courseId) {
-    router.push('/courses');
-    return;
+    router.push('/courses')
+    return
   }
 
   try {
-    const res = await api.get(`courses/${courseId}`);
-    course.value = res.data.course;
+    const res = await api.get(`courses/${courseId}`)
+    course.value = res.data.course
   } catch (err) {
-    console.error('Error fetching course:', err);
-    course.value = null;
+    console.error('Error fetching course:', err)
+    course.value = null
   } finally {
-    loading.value = false;
+    loading.value = false
   }
-})();
+})()
 </script>
 
 <style scoped>

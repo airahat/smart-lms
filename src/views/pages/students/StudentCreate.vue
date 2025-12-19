@@ -1,6 +1,6 @@
 <template>
     <div class="container mt-4 text-white">
-        <h2 class="mb-4">Create New Trainer</h2>
+        <h2 class="mb-4">Add New Student</h2>
 
         <!-- <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
         <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div> -->
@@ -34,7 +34,7 @@
                 </select>
             </div>
 
-            <button type="submit" class="btn btn-primary">Create Trainer</button>
+            <button type="submit" class="btn btn-primary">Create Student</button>
         </form>
     </div>
 </template>
@@ -63,7 +63,7 @@ const user = ref<User>({
     email: '',
     phone: '',
     address: '',
-    role_id: 4
+    role_id: 3
 });
 
 const roles = ref<Role[]>([]);
@@ -86,7 +86,7 @@ const createUser = async () => {
         const res = await api.post('users', user.value);
         successMessage.value = res.data.message || 'User created successfully!';
         user.value = { name: '', email: '', phone: '', address: '', role_id: '' };
-        router.push('/trainers');
+        router.push('/students');
     } catch (err: any) {
         console.error(err);
         errorMessage.value = err.response?.data?.message || 'Error creating user.';
