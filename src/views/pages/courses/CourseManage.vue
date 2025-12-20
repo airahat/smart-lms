@@ -45,77 +45,77 @@ function deleteCourse(id: number) {
 </script>
 
 <template>
-    <div class="container-fluid">
+  <div class="container-fluid py-4">
 
+    <h1 class="text-white fw-bolder">All Courses</h1>
+    <div class="row g-4">
+      <div
+        class="col-12 col-sm-6 col-md-4 col-lg-3"
+        v-for="course in courses"
+        :key="course.id"
+      >
+        <div class="card h-100 shadow-sm course-card">
 
-        <!-- <div class="bg-success text-light fs-4 fw-bolder d-flex p-2"><span>Courses List</span> <router-link
-                to="/courses/create" class="btn btn-outline-info text-light fw-bolder ms-auto">Add
-                New+</router-link>
-        </div> -->
-        <!-- <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>SL</th>
-                    <th>Course Code</th>
-                    <th>Course Name</th>
-                    <th>Instructor</th>
-                    <th>Duration (Hrs.)</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(course, index) in courses" :key="course.id">
-                    <td>{{ index + 1 }}</td>
-                    <td>{{ course.course_code }}</td>
-                    <td>{{ course.title }}</td>
-                    <td>{{ course.trainer_name }}</td>
-                    <td>{{ course.duration }}</td>
-                    <td>
-                        <router-link :to="`/courses/${course.id}/details`" class="btn btn-sm"
-                            v-if="userStore.isAdmin"><i class="fa-solid fa-eye fs-5 "></i></router-link>
-                        <router-link :to="`/courses/${course.id}/edit`" class="btn btn-sm" v-if="userStore.isAdmin"><i
-                                class="fa-solid fs-5 fa-pen-to-square text-info"></i></router-link>
-                        <button @click="deleteCourse(course.id)" class="btn btn-sm" v-if="userStore.isAdmin"><i
-                                class="fa-regular fa-trash-can fs-5 text-danger"></i></button>
-                        <router-link :to="`/courses/${course.id}/details`" class="btn btn-sm" v-else><i
-                                class="fa-solid fa-eye fs-5 "></i></router-link>
-                    </td>
-                </tr>
+          <!-- Header -->
+          <div class="card-header bg-success text-white">
+            <h6 class="mb-0 text-truncate">{{ course.title }}</h6>
+          </div>
 
-            </tbody>
+          <!-- Body -->
+          <div class="card-body">
+            <p class="mb-2">
+              <strong>Code:</strong> {{ course.course_code }}
+            </p>
+            <p class="mb-2">
+              <strong>Instructor:</strong> {{ course.trainer_name }}
+            </p>
+            <p class="mb-0">
+              <strong>Duration:</strong> {{ course.duration }} hours
+            </p>
+          </div>
 
+          <!-- Footer -->
+          <div class="card-footer bg-light d-flex justify-content-between">
+            <router-link
+              :to="`/courses/${course.id}/details`"
+              class="btn btn-sm btn-outline-primary"
+            >
+              View
+            </router-link>
 
-        </table> -->
-        <div class="d-flex flex-wrap ">
-
-            <div class="card col-2 mb-3 ms-3" v-for="(course, index) in courses" :key="course.id">
-                <div class="card-header bg-success text-white w-100">
-                    <h5 class="card-title">{{ course.title }}</h5>
-
-                </div>
-                <div class="card-body">
-
-
-                    <p class="card-text"><strong>Course Code:</strong> {{ course.course_code }}</p>
-                    <p class="card-text"><strong>Instructor:</strong> {{ course.trainer_name }}</p>
-                    <p class="card-text"><strong>Duration:</strong> {{ course.duration }} hours</p>
-                    <div class="card-footer d-flex justify-content-between">
-
-                        <router-link :to="`/courses/${course.id}/edit`" class="btn btn-primary me-2"
-                            v-if="userStore.isAdmin">Edit Course</router-link>
-                        <button @click="deleteCourse(course.id)" class="btn btn-danger" v-if="userStore.isAdmin">Delete
-                            Course</button>
-                    </div>
-
-
-                </div>
+            <div v-if="userStore.isAdmin">
+              <router-link
+                :to="`/courses/${course.id}/edit`"
+                class="btn btn-sm btn-outline-success me-1"
+              >
+                Edit
+              </router-link>
+              <button
+                @click="deleteCourse(course.id)"
+                class="btn btn-sm btn-outline-danger"
+              >
+                Delete
+              </button>
             </div>
-
+          </div>
 
         </div>
-
+      </div>
     </div>
 
+  </div>
 </template>
 
-<style scoped></style>
+
+<style scoped>
+
+    .course-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+</style>
